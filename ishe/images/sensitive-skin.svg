@@ -1,0 +1,19 @@
+<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circle outline -->
+  <circle cx="100" cy="80" r="60" fill="none" stroke="#1C1C1C" stroke-width="4"/>
+  
+  <!-- Circle inner line -->
+  <circle cx="100" cy="80" r="55" fill="none" stroke="#1C1C1C" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Left Leaf -->
+  <path d="M 115 45 Q 130 35 140 50 Q 135 60 120 55" fill="none" stroke="#1C1C1C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 118 48 L 135 52" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 120 45 L 137 50" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 122 52 L 139 57" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Right Leaf -->
+  <path d="M 125 40 Q 145 30 155 45 Q 150 60 130 55" fill="none" stroke="#1C1C1C" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 128 43 L 150 50" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 130 38 L 152 42" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 132 47 L 154 52" stroke="#1C1C1C" stroke-width="1.5" opacity="0.6"/>
+</svg>

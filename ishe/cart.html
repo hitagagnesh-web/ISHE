@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout & Billing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .cart-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1.2rem;
+            border-bottom: 1px solid #e0e0e0;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+        }
+        
+        .cart-item:hover {
+            background-color: #f9f7f4;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.15);
+        }
+        
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 6px;
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-item img:hover {
+            transform: scale(1.05);
+        }
+        
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        
+        .cart-item-details h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: #1c1c1c;
+        }
+        
+        .cart-item-details p {
+            margin: 0.3rem 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .quantity-controller {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #d4a574;
+            background: white;
+            color: #d4a574;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-btn:hover {
+            background: #d4a574;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .qty-input {
+            width: 50px;
+            height: 28px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1c1c1c;
+        }
+        
+        .qty-input:focus {
+            outline: none;
+            border-color: #d4a574;
+            box-shadow: 0 0 5px rgba(212, 165, 116, 0.3);
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-direction: column;
+        }
+        
+        .remove-btn {
+            border: none;
+            background: #ffebee;
+            color: #c62828;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .remove-btn:hover {
+            background: #c62828;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .item-price {
+            font-weight: 700;
+            color: #d4a574;
+            font-size: 1.1rem;
+        }
+        
+        #cartItemsContainer {
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .cart-item {
+            animation: slideIn 0.3s ease;
+        }
+        
+        .billing-summary {
+            animation: slideIn 0.4s ease 0.1s both;
+        }
+        
+        .summary-line {
+            transition: all 0.2s ease;
+        }
+        
+        .summary-line:hover {
+            transform: translateX(5px);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            animation: fadeIn 0.4s ease;
+        }
+        
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state p {
+            color: #999;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state a {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: #d4a574;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .empty-state a:hover {
+            background: #b8915f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #5C8578;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideInToast 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .toast.error {
+            background: #c62828;
+        }
+        
+        .toast.success {
+            background: #5C8578;
+        }
+        
+        @keyframes slideInToast {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutToast {
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+        
+        .checkout-layout {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn:disabled:hover {
+            background: #d4a574;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><h3>SKN.</h3></div>
+        <nav class="nav-links">
+            <a href="skintypes.html">Shop</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="cart.html">Cart</a>
+            <a href="login.html" class="btn btn-ghost" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 style="display: flex; justify-content: space-between; align-items: center;">
+            Your Shopping Cart
+            <button type="button" class="btn btn-ghost" style="padding: 0.5rem 1rem; font-size: 0.9rem; border-color: #f44336; color: #f44336;" onclick="clearEntireCart()">Clear Cart</button>
+        </h2>
+
+        <div class="checkout-layout">
+            <main class="shipping-details">
+                <h3>1. Items Review</h3>
+                <div id="cartItemsContainer" style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd; border-radius: 4px; padding: 1rem; margin-bottom: 2rem;">
+                    <!-- Cart items will be loaded here dynamically -->
+                </div>
+
+                <h3>2. Shipping Address</h3>
+                <form id="shipping-form">
+                    <div class="form-group"><input type="text" placeholder="Full Name" required></div>
+                    <div class="form-group"><input type="text" placeholder="Full Address (Street, Locality)" required></div>
+                    <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" placeholder="City" required>
+                        <input type="text" placeholder="Pincode" required>
+                    </div>
+                    <div class="form-group"><input type="tel" placeholder="Mobile Number" required></div>
+                </form>
+            </main>
+
+            <aside class="billing-counter">
+                <div class="billing-summary">
+                    <h3>3. Order Summary</h3>
+                    
+                    <div class="summary-line"><span>Subtotal:</span><span id="subtotalDisplay">₹0</span></div>
+                    <div class="summary-line"><span>Shipping:</span><span>₹70</span></div>
+                    <div class="summary-line" style="color: var(--color-success);"><span>Discount (10%):</span><span id="discountDisplay">-₹0</span></div>
+                    
+                    <div class="grand-total summary-line"><span>Grand Total:</span><span id="finalTotalDisplay">₹70</span></div>
+                </div>
+
+                <div class="payment-options" style="margin-top: 2rem;">
+                    <h3>4. Payment Method</h3>
+                    
+                    <label style="display: block; margin-bottom: 1rem;"><input type="radio" name="payment" value="cod" checked id="radio-cod"> Cash on Delivery</label>
+                    <label style="display: block;"><input type="radio" name="payment" value="online" id="radio-online"> UPI / Card (Simulated)</label>
+
+                    <div class="qr-code-box" id="qr-code-box" style="display: none;">
+                        <img src="https://via.placeholder.com/150/1C1C1C/fff?text=Fake+QR+Code" alt="Fake QR Code">
+                        <p style="font-size: 0.9rem; margin-top: 10px;">Scan this (Simulated) QR Code to Pay</p>
+                    </div>
+
+                    <button class="btn" style="width: 100%; margin-top: 2rem;" onclick="placeOrder()">Place Order</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        &copy; 2025 SKN. All rights reserved.
+    </footer>
+    
+    <script>
+        // Get user's cart from localStorage
+        function getUserCart() {
+            const userEmail = localStorage.getItem('userEmail');
+            const cartKey = 'cart_' + userEmail;
+            const cartData = localStorage.getItem(cartKey);
+            return cartData ? JSON.parse(cartData) : [];
+        }
+
+        // Save cart to localStorage
+        function saveCart(cart) {
+            const userEmail = localStorage.getItem('userEmail');
+            const cartKey = 'cart_' + userEmail;
+            localStorage.setItem(cartKey, JSON.stringify(cart));
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success', duration = 3000) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOutToast 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // Render cart items with quantity controls
+        function renderCart() {
+            const cart = getUserCart();
+            const container = document.getElementById('cartItemsContainer');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p style="font-size: 3rem; margin: 0 0 1rem 0;">🛒</p>
+                        <p>Your cart is empty</p>
+                        <a href="skintypes.html">Continue Shopping</a>
+                    </div>
+                `;
+                updateTotal(0);
+                return;
+            }
+
+            container.innerHTML = '';
+            let subtotal = 0;
+            
+            cart.forEach((product, index) => {
+                const itemTotal = product.price * (product.quantity || 1);
+                subtotal += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.setAttribute('data-index', index);
+                cartItem.innerHTML = `
+                    <img src="${product.localImage || product.image}" alt="${product.name}">
+                    <div class="cart-item-details">
+                        <h4>${product.name}</h4>
+                        <p>${product.category || 'SKN Product'}</p>
+                        <div class="quantity-controller">
+                            <button type="button" class="qty-btn" onclick="changeQuantity(${index}, -1)">−</button>
+                            <input type="number" class="qty-input" value="${product.quantity || 1}" 
+                                   onchange="updateQuantity(${index}, this.value)" 
+                                   min="1" max="10">
+                            <button type="button" class="qty-btn" onclick="changeQuantity(${index}, 1)">+</button>
+                        </div>
+                        <p style="margin-top: 0.5rem;">Price: <span class="item-price">₹${product.price}</span> × ${product.quantity || 1} = <span class="item-price">₹${itemTotal}</span></p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <button type="button" class="remove-btn" onclick="removeCartItem(${index})">Remove</button>
+                    </div>
+                `;
+                container.appendChild(cartItem);
+            });
+            
+            updateTotal(subtotal);
+        }
+
+        // Change quantity with +/- buttons
+        function changeQuantity(index, delta) {
+            const cart = getUserCart();
+            if (cart[index]) {
+                const newQty = (cart[index].quantity || 1) + delta;
+                if (newQty > 0 && newQty <= 10) {
+                    cart[index].quantity = newQty;
+                    saveCart(cart);
+                    renderCart();
+                    showToast(`${cart[index].name} quantity updated!`, 'success', 2000);
+                } else if (newQty <= 0) {
+                    removeCartItem(index);
+                }
+            }
+        }
+
+        // Update quantity from input
+        function updateQuantity(index, newValue) {
+            const qty = parseInt(newValue);
+            const cart = getUserCart();
+            
+            if (isNaN(qty) || qty < 1 || qty > 10) {
+                showToast('Quantity must be between 1 and 10', 'error');
+                renderCart();
+                return;
+            }
+            
+            cart[index].quantity = qty;
+            saveCart(cart);
+            renderCart();
+        }
+
+        function updateTotal(subtotal) {
+            const shippingCost = 70;
+            const discount = Math.floor(subtotal * 0.10);
+            const total = subtotal + shippingCost - discount;
+            
+            document.getElementById('subtotalDisplay').textContent = '₹' + subtotal.toLocaleString('en-IN');
+            document.getElementById('discountDisplay').textContent = '-₹' + discount.toLocaleString('en-IN');
+            document.getElementById('finalTotalDisplay').textContent = '₹' + total.toLocaleString('en-IN');
+        }
+
+        function removeCartItem(index) {
+            const cart = getUserCart();
+            const product = cart[index];
+            const productName = product.name;
+            
+            cart.splice(index, 1);
+            saveCart(cart);
+            showToast(`${productName} removed from cart!`, 'success', 2000);
+            renderCart();
+        }
+
+        function clearEntireCart() {
+            const cart = getUserCart();
+            if (cart.length === 0) {
+                showToast('Cart is already empty', 'error', 2000);
+                return;
+            }
+            
+            if (confirm('Are you sure you want to clear the entire cart? This action cannot be undone.')) {
+                saveCart([]);
+                showToast('Cart cleared successfully!', 'success', 2000);
+                renderCart();
+            }
+        }
+
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert('Please login first');
+                window.location.href = 'login.html';
+            }
+            renderCart();
+        });
+
+        function logout() {
+            const userEmail = localStorage.getItem('userEmail');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            // Clear user's cart and wishlist
+            if (userEmail) {
+                localStorage.removeItem('cart_' + userEmail);
+                localStorage.removeItem('wishlist_' + userEmail);
+            }
+            window.location.href = 'login.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const qrBox = document.getElementById('qr-code-box');
+            const radioOnline = document.getElementById('radio-online');
+            const radioCod = document.getElementById('radio-cod');
+
+            const toggleQrCode = () => {
+                if (radioOnline.checked) {
+                    qrBox.style.display = 'block';
+                } else {
+                    qrBox.style.display = 'none';
+                }
+            };
+
+            radioOnline.addEventListener('change', toggleQrCode);
+            radioCod.addEventListener('change', toggleQrCode);
+        });
+
+        function placeOrder() {
+            const form = document.getElementById('shipping-form');
+            if (form.checkValidity() === false) {
+                form.reportValidity();
+                showToast('Please fill in all shipping details', 'error', 2000);
+                return;
+            }
+
+            const cart = getUserCart();
+            if (cart.length === 0) {
+                showToast('Your cart is empty. Add items before placing an order.', 'error', 2000);
+                return;
+            }
+
+            const finalTotal = document.getElementById('finalTotalDisplay').textContent;
+            const paymentMethod = document.querySelector('input[name="payment"]:checked').value === 'cod' ? 'Cash on Delivery' : 'Simulated UPI/Card';
+            
+            // Get user data from form or localStorage
+            const shippingName = document.querySelector('input[placeholder="Full Name"]').value;
+            const userEmail = localStorage.getItem('userEmail') || 'guest@example.com';
+
+            // Generate unique order ID
+            const timestamp = Date.now().toString().slice(-6);
+            const orderId = 'SKN' + timestamp;
+
+            // Store data for confirmation page
+            localStorage.setItem('lastOrderTotal', finalTotal);
+            localStorage.setItem('lastPaymentMethod', paymentMethod);
+            localStorage.setItem('lastOrderName', shippingName);
+            localStorage.setItem('lastOrderEmail', userEmail);
+            localStorage.setItem('lastOrderId', orderId);
+            localStorage.setItem('lastOrderItems', JSON.stringify(cart));
+
+            showToast('Processing order...', 'success', 1500);
+            setTimeout(() => {
+                window.location.href = 'confirm.html';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

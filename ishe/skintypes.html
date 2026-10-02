@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Skin Type</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><h3>SKN.</h3></div>
+        <nav class="nav-links">
+            <a href="skintypes.html">Shop</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="cart.html">Cart</a>
+            <a href="login.html" class="btn btn-ghost" onclick="logout()">Logout</a>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <h2 style="text-align: center;">What's Your Skin Type?</h2>
+        <p style="text-align: center; max-width: 700px; margin: 0 auto 3rem;">Select your primary skin type to explore products specifically formulated for your needs.</p>
+
+        <div class="skintypes-grid">
+            <a href="products.html?type=sensitive" class="skintype-card">
+                <img src="images/sensitive-skin.svg" alt="Sensitive Skin Icon" style="margin-bottom: 1rem; width: 100px; height: 100px;">
+                <h3>Sensitive Skin</h3>
+                <p>Easily prone to redness, irritation, and allergic reactions. Needs soothing, gentle products.</p>
+                <span class="btn btn-ghost" style="padding: 0.5rem 1.5rem; width: 100%;">Shop Now</span>
+            </a>
+            
+            <a href="products.html?type=combination" class="skintype-card">
+                <img src="images/combination-skin.svg" alt="Combination Skin Icon" style="margin-bottom: 1rem; width: 100px; height: 100px;">
+                <h3>Combination</h3>
+                <p>A mix of oily areas (T-zone) and dry or normal areas. Requires targeted care for both zones.</p>
+                <span class="btn btn-ghost" style="padding: 0.5rem 1.5rem; width: 100%;">Shop Now</span>
+            </a>
+
+            <a href="products.html?type=oily" class="skintype-card">
+                <img src="images/oily-skin.svg" alt="Oily Skin Icon" style="margin-bottom: 1rem; width: 100px; height: 100px;">
+                <h3>Oily Skin</h3>
+                <p>Characterized by excess sebum, a shiny appearance, and often prone to blemishes. Needs balance.</p>
+                <span class="btn btn-ghost" style="padding: 0.5rem 1.5rem; width: 100%;">Shop Now</span>
+            </a>
+
+            <a href="products.html?type=dry" class="skintype-card">
+                <img src="images/dry-skin.svg" alt="Dry Skin Icon" style="margin-bottom: 1rem; width: 100px; height: 100px;">
+                <h3>Dry Skin</h3>
+                <p>Characterized by a tight feeling, flakiness, and minimal oil production. Needs deep hydration.</p>
+                <span class="btn btn-ghost" style="padding: 0.5rem 1.5rem; width: 100%;">Shop Now</span>
+            </a>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        &copy; 2025 SKN. All rights reserved.
+    </footer>
+
+    <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isLoggedIn') !== 'true') {
+                alert('Please login first');
+                window.location.href = 'login.html';
+            }
+        });
+
+        function logout() {
+            const userEmail = localStorage.getItem('userEmail');
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userName');
+            // Clear user's cart and wishlist
+            if (userEmail) {
+                localStorage.removeItem('cart_' + userEmail);
+                localStorage.removeItem('wishlist_' + userEmail);
+            }
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

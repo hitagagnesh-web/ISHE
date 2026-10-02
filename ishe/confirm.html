@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><h3>SKN.</h3></div>
+        <nav class="nav-links">
+            <a href="skintypes.html">Shop</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="cart.html">Cart</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="confirmation-box">
+            <div class="thank-you">Thank You!</div>
+            <h1 style="text-align: center;">Order Confirmed!</h1>
+            <p style="font-size: 1.1rem; color: #444; text-align: center;" id="greetingMessage">Your order has been placed successfully!</p>
+            <p style="margin-top: 1.5rem; font-weight: 600; text-align: center;">Expected Delivery: 3-5 Business Days</p>
+
+            <div class="bill-details" id="billContent" style="
+                text-align: left;
+                margin-top: 2rem;
+                padding: 1.5rem;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                background-color: #f9f9f9;
+            ">
+                <h3 style="text-align: center; letter-spacing: normal; margin-top: 0;">Invoice Summary</h3>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>Order ID:</span>
+                    <span id="billOrderId">SKN12345</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>Customer Name:</span>
+                    <span id="billCustomerName">Guest</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>Email:</span>
+                    <span id="billCustomerEmail">guest@example.com</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                    <span>Date:</span>
+                    <span id="billDate">22/12/2025</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 2px solid #ddd;">
+                    <span>Payment Method:</span>
+                    <span id="paymentMethodDisplay">Cash on Delivery</span>
+                </div>
+                
+                <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem;">Order Items:</h4>
+                <div id="orderItemsDisplay" style="padding: 0.5rem 0; border-bottom: 1px solid #eee; max-height: 150px; overflow-y: auto;">
+                    <!-- Items will be populated here -->
+                </div>
+                
+                <hr style="margin: 10px 0;">
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Subtotal:</span>
+                    <span id="subtotalDisplay">₹3,199</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+                    <span>Shipping:</span>
+                    <span>₹70</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; color: var(--color-success);">
+                    <span>Discount (10%):</span>
+                    <span id="discountDisplay">-₹320</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-top: 2px solid #ddd; margin-top: 0.5rem; font-weight: 700; font-size: 1.1rem;">
+                    <span>Total Paid:</span>
+                    <span id="finalTotalDisplay">₹2,949</span>
+                </div>
+            </div>
+
+            <button class="btn" style="margin-top: 2rem; width: 100%;" onclick="downloadBill()">Download Bill</button>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        &copy; 2025 SKN. All rights reserved.
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const total = localStorage.getItem('lastOrderTotal') || '₹2,949';
+            const method = localStorage.getItem('lastPaymentMethod') || 'Cash on Delivery';
+            const customerName = localStorage.getItem('lastOrderName') || localStorage.getItem('userName') || 'Valued Customer';
+            const customerEmail = localStorage.getItem('lastOrderEmail') || localStorage.getItem('userEmail') || 'guest@example.com';
+            const orderItemsJson = localStorage.getItem('lastOrderItems') || '[]';
+            const orderItems = JSON.parse(orderItemsJson);
+            
+            // Use stored order ID or generate new one
+            let orderId = localStorage.getItem('lastOrderId');
+            if (!orderId) {
+                const timestamp = Date.now().toString().slice(-6);
+                orderId = 'SKN' + timestamp;
+            }
+            
+            // Get today's date
+            const today = new Date();
+            const formattedDate = `${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+            
+            // Calculate subtotal and discount
+            let subtotal = 0;
+            orderItems.forEach(item => {
+                subtotal += item.price * (item.quantity || 1);
+            });
+            const discount = Math.floor(subtotal * 0.10);
+            
+            // Display order items
+            const itemsContainer = document.getElementById('orderItemsDisplay');
+            itemsContainer.innerHTML = '';
+            orderItems.forEach((item, idx) => {
+                const itemTotal = item.price * (item.quantity || 1);
+                const itemDiv = document.createElement('div');
+                itemDiv.style.cssText = `
+                    padding: 0.5rem 0;
+                    border-bottom: 1px solid #eee;
+                    font-size: 0.9rem;
+                    display: flex;
+                    justify-content: space-between;
+                `;
+                itemDiv.innerHTML = `
+                    <span>${item.name} × ${item.quantity || 1}</span>
+                    <span style="font-weight: 600;">₹${itemTotal}</span>
+                `;
+                itemsContainer.appendChild(itemDiv);
+            });
+            
+            // Update displays
+            document.getElementById('greetingMessage').textContent = `Thank you for your order, ${customerName}! Your order has been placed successfully.`;
+            document.getElementById('billOrderId').textContent = orderId;
+            document.getElementById('billCustomerName').textContent = customerName;
+            document.getElementById('billCustomerEmail').textContent = customerEmail;
+            document.getElementById('billDate').textContent = formattedDate;
+            document.getElementById('finalTotalDisplay').textContent = total;
+            document.getElementById('paymentMethodDisplay').textContent = method;
+            document.getElementById('subtotalDisplay').textContent = '₹' + subtotal.toLocaleString('en-IN');
+            document.getElementById('discountDisplay').textContent = '-₹' + discount.toLocaleString('en-IN');
+            
+            // Store for download
+            window.orderData = {
+                orderId: orderId,
+                customerName: customerName,
+                customerEmail: customerEmail,
+                date: formattedDate,
+                method: method,
+                total: total,
+                items: orderItems,
+                subtotal: subtotal,
+                discount: discount
+            };
+        });
+
+        function downloadBill() {
+            const data = window.orderData;
+            
+            const billText = `
+════════════════════════════════════════════════════════════════
+                           SKN. INVOICE
+════════════════════════════════════════════════════════════════
+
+CUSTOMER DETAILS:
+─────────────────────────────────────────────────────────────────
+Name                : ${data.customerName}
+Email               : ${data.customerEmail}
+
+ORDER DETAILS:
+─────────────────────────────────────────────────────────────────
+Order ID            : ${data.orderId}
+Order Date          : ${data.date}
+Payment Method      : ${data.method}
+
+BILLING SUMMARY:
+─────────────────────────────────────────────────────────────────
+Subtotal            : ₹3,199
+Shipping            : ₹70
+Discount (10%)      : -₹320
+─────────────────────────────────────────────────────────────────
+TOTAL AMOUNT        : ${data.total}
+
+DELIVERY INFORMATION:
+─────────────────────────────────────────────────────────────────
+Expected Delivery   : 3-5 Business Days
+Status              : Order Confirmed & Processing
+
+════════════════════════════════════════════════════════════════
+              Thank you for shopping with SKN! 
+════════════════════════════════════════════════════════════════
+`;
+            
+            // Create and download
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(billText));
+            element.setAttribute('download', `SKN_Invoice_${data.orderId}.txt`);
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+
+            alert("Invoice downloaded successfully!");
+        }
+    </script>
+</body>
+</html>

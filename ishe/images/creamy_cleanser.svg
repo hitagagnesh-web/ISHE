@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+  <defs>
+    <linearGradient id="g3" x1="0" x2="1">
+      <stop offset="0" stop-color="#FBFBFB"/>
+      <stop offset="1" stop-color="#F3EFEC"/>
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g3)"/>
+  <g transform="translate(40,40)">
+    <rect width="720" height="720" rx="24" fill="#fff" stroke="#EEE6DE" stroke-width="2"/>
+    <text x="50%" y="48%" text-anchor="middle" font-family="Lora, serif" font-size="42" fill="#9B7062">Creamy</text>
+    <text x="50%" y="58%" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" fill="#6c6c6c">Cleanser</text>
+  </g>
+</svg>

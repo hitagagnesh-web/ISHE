@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><h3>SKN.</h3></div>
+        <nav class="nav-links">
+            <a href="skintypes.html">Shop</a>
+            <a href="cart.html">Cart</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="form-card">
+            <h2 style="text-align: center; margin-bottom: 2rem;">Welcome Back</h2>
+            
+            <!-- Gmail Login -->
+            <button type="button" class="btn" style="width: 100%; margin-bottom: 1.5rem; background-color: #4285F4; border-color: #4285F4; display: flex; align-items: center; justify-content: center; gap: 0.5rem;" onclick="loginWithGmail()">
+                <span>📧</span> Sign in with Gmail
+            </button>
+
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--color-bg-secondary);">
+
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group"><input type="email" id="loginEmail" placeholder="Email Address" required></div>
+                <div class="form-group"><input type="password" id="loginPassword" placeholder="Password" required></div>
+                <a href="#" style="font-size: 0.9rem; color: #666; display: block; margin-bottom: 1.5rem; text-align: right;">Forgot Password?</a>
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+            </form>
+
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--color-bg-secondary);">
+
+            <h3 style="text-align: center; font-size: 1.1rem; margin-bottom: 1.5rem;">New Customer?</h3>
+            <form id="signup-form" onsubmit="handleSignup(event)">
+                <div class="form-group"><input type="text" id="signupName" placeholder="Full Name" required></div>
+                <div class="form-group"><input type="email" id="signupEmail" placeholder="Email Address" required></div>
+                <div class="form-group"><input type="password" id="signupPassword" placeholder="Create Password" required></div>
+                <button type="submit" class="btn btn-ghost" style="width: 100%;">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        &copy; 2025 SKN. All rights reserved.
+    </footer>
+
+    <script>
+        // Gmail Login Simulation
+        function loginWithGmail() {
+            // Simulate Gmail OAuth - in real app, use Google Sign-In SDK
+            const gmailEmail = prompt("Enter your Gmail address:", "");
+            if (!gmailEmail) return;
+
+            // Extract name from email (before @)
+            const nameFromEmail = gmailEmail.split('@')[0].replace(/[._-]/g, ' ').toUpperCase();
+            
+            // Save user data
+            localStorage.setItem('userEmail', gmailEmail);
+            localStorage.setItem('userName', nameFromEmail);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            // Initialize empty cart and wishlist for user
+            localStorage.setItem('cart_' + gmailEmail, JSON.stringify([]));
+            localStorage.setItem('wishlist_' + gmailEmail, JSON.stringify([]));
+            
+            alert("Successfully logged in with Gmail! Welcome " + nameFromEmail);
+            window.location.href = 'skintypes.html';
+        }
+
+        // Handle traditional signup
+        function handleSignup(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            // Store user data
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userPassword', password);
+            localStorage.setItem('isLoggedIn', 'true');
+            
+            // Initialize empty cart and wishlist for new user
+            localStorage.setItem('cart_' + email, JSON.stringify([]));
+            localStorage.setItem('wishlist_' + email, JSON.stringify([]));
+            
+            alert("Account created successfully! Welcome " + name);
+            window.location.href = 'skintypes.html';
+        }
+
+        // Handle traditional login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Check if account exists
+            const storedEmail = localStorage.getItem('userEmail');
+            const storedPassword = localStorage.getItem('userPassword');
+            const storedName = localStorage.getItem('userName');
+            
+            if (email === storedEmail && password === storedPassword) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', storedName);
+                
+                // Initialize cart and wishlist for user if not exists
+                if (!localStorage.getItem('cart_' + email)) {
+                    localStorage.setItem('cart_' + email, JSON.stringify([]));
+                }
+                if (!localStorage.getItem('wishlist_' + email)) {
+                    localStorage.setItem('wishlist_' + email, JSON.stringify([]));
+                }
+                
+                alert("Logged in successfully! Welcome " + storedName);
+                window.location.href = 'skintypes.html';
+            } else {
+                alert("Invalid email or password. Please try again.");
+            }
+        }
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = 'skintypes.html';
+            }
+        });
+    </script>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo"><h3>SKN.</h3></div>
+        <nav class="nav-links">
+            <a href="skintypes.html">Shop</a>
+            <a href="wishlist.html">Wishlist</a>
+            <a href="cart.html">Cart</a>
+            <a href="login.html" class="btn btn-ghost">Login / Signup</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2 id="page-title">Products for Dry Skin</h2>
+
+        <div class="product-page-layout">
+            <aside class="sidebar">
+                <h3 style="letter-spacing: normal;">Filter</h3>
+                
+                <div style="margin-top: 1.5rem;">
+                    <h4 style="font-family: var(--font-sans); font-weight: 600; margin-bottom: 0.8rem;">Category</h4>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Face Cleanser</label>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Face Mask</label>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Moisturiser</label>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Face Serum</label>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Sunscreen</label>
+                    <label style="display: block; margin-bottom: 0.5rem;"><input type="checkbox"> Lip Balm</label>
+                </div>
+            </aside>
+
+            <main class="product-grid" id="product-grid">
+                </main>
+        </div>
+    </div>
+    
+    <footer class="footer">
+        &copy; 2025 SKN. All rights reserved.
+    </footer>
+
+    <script>
+        // --- SIMULATED PRODUCT DATA (INR) ---
+        const allProducts = [
+            { id: 1, type: 'dry', name: 'Hyaluronic Acid Serum', category: 'Face Serum', price: 1299, image: 'Serum' },
+            { id: 2, type: 'dry', name: 'Ceramide Rich Moisturiser', category: 'Moisturiser', price: 950, image: 'Moisturiser' },
+            { id: 3, type: 'dry', name: 'Creamy Cleanser', category: 'Face Cleanser', price: 650, image: 'Cleanser' },
+            { id: 4, type: 'oily', name: 'Niacinamide Serum', category: 'Face Serum', price: 1099, image: 'Niacinamide' },
+            { id: 5, type: 'oily', name: 'Oil-Free Mattifying Gel', category: 'Moisturiser', price: 890, image: 'Gel' },
+            { id: 6, type: 'oily', name: 'Salicylic Acid Mask', category: 'Face Mask', price: 799, image: 'Mask' },
+            { id: 7, type: 'combination', name: 'Balanced Gel Moisturiser', category: 'Moisturiser', price: 999, image: 'Balanced' },
+            { id: 8, type: 'sensitive', name: 'Oatmeal Soothing Cleanser', category: 'Face Cleanser', price: 750, image: 'Oatmeal' },
+            { id: 9, type: 'all', name: 'SPF 50 Face Sunscreen', category: 'Face Sunscreen', price: 1450, image: 'Sunscreen' },
+            { id: 10, type: 'all', name: 'Tinted Lip Balm', category: 'Lip Balm', price: 399, image: 'LipBalm' },
+        ];
+
+        // Placeholder functions for Cart and Wishlist
+        function addToCart(productId) {
+            alert(`Product ${productId} added to cart! (Simulated)`);
+            // In a real app, this would update local storage/session
+        }
+        function addToWishlist(productId) {
+            alert(`Product ${productId} added to wishlist! (Simulated)`);
+            // In a real app, this would update local storage/session
+        }
+
+        // --- DYNAMIC RENDERING LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const skinType = params.get('type') || 'all'; // Default to show all if no type selected
+            const pageTitle = document.getElementById('page-title');
+            const productGrid = document.getElementById('product-grid');
+
+            // Set Title
+            const displayType = skinType.charAt(0).toUpperCase() + skinType.slice(1);
+            pageTitle.textContent = `Products for ${displayType} Skin`;
+
+            // Filter Products
+            const filteredProducts = allProducts.filter(p => p.type === skinType || p.type === 'all');
+            
+            // Render Products
+            if (filteredProducts.length > 0) {
+                filteredProducts.forEach(product => {
+                    const card = document.createElement('div');
+                    card.classList.add('product-card');
+                    card.setAttribute('data-id', product.id);
+
+                    card.innerHTML = `
+                        <span class="wishlist-icon" onclick="addToWishlist(${product.id})">❤️</span>
+                        <img src="https://via.placeholder.com/300x250/ECE4DF/9B7062?text=${product.image}" alt="${product.name}">
+                        <h4>${product.name}</h4>
+                        <p style="color: #888; font-size: 0.9rem;">${product.category}</p>
+                        <div class="price">₹${product.price.toLocaleString('en-IN')}</div>
+                        <button class="btn" onclick="addToCart(${product.id})">Add to Cart</button>
+                    `;
+                    productGrid.appendChild(card);
+                });
+            } else {
+                productGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; padding: 2rem;">No specific products found for this skin type yet.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

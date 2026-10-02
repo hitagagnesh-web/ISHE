@@ -1,0 +1,20 @@
+<svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circle outline -->
+  <circle cx="100" cy="80" r="65" fill="none" stroke="#1C1C1C" stroke-width="4"/>
+  
+  <!-- Left dark half (filled) -->
+  <path d="M 100 15 A 65 65 0 0 0 100 145 L 100 80 Z" fill="#1C1C1C"/>
+  
+  <!-- Drop 1 (top right) -->
+  <path d="M 120 45 Q 125 35 125 25 Q 125 15 120 15 Q 115 15 115 25 Q 115 35 120 45" fill="none" stroke="#1C1C1C" stroke-width="3"/>
+  
+  <!-- Drop 2 (bottom right) -->
+  <path d="M 135 70 Q 140 55 140 42 Q 140 30 135 30 Q 130 30 130 42 Q 130 55 135 70" fill="none" stroke="#1C1C1C" stroke-width="3"/>
+  
+  <!-- Leaf (right) -->
+  <path d="M 115 55 L 130 45" stroke="#1C1C1C" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M 120 50 Q 125 48 128 50" stroke="#1C1C1C" stroke-width="2" fill="none"/>
+  
+  <!-- Text -->
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="#1C1C1C">COMBINATION SKIN</text>
+</svg>
